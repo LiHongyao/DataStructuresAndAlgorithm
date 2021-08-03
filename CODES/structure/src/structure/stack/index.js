@@ -2,7 +2,7 @@
  * @Author: Lee
  * @Date: 2021-07-30 16:45:30
  * @LastEditors: Lee
- * @LastEditTime: 2021-07-30 17:02:25
+ * @LastEditTime: 2021-08-03 11:45:05
  */
 
 /**
@@ -25,6 +25,7 @@ class Stack {
     return this.items.pop();
   }
   peek() {
+    if (!this.isEmpty()) return null;
     return this.items[this.items.length - 1];
   }
   isEmpty() {

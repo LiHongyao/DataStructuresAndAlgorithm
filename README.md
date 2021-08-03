@@ -119,6 +119,186 @@
 
 ![](./IMGS/stack.png)
 
+**数组实现：**
+
+```javascript
+/**
+ * 栈结构方法
+ * - push(element)：添加一个新元素到栈顶位置
+ * - pop()：移除栈顶的怨怒是，同时返回被移除的元素
+ * - peek()：返回栈顶的元素，不对栈做任何修改（这个方法不会移除栈顶的元素，仅仅返回它）
+ * - isEmpty()：如果栈里没有任何元素就返回true，否则返回false
+ * - size()：返回栈里的元素个数。这个方法和数组的length很类似。
+ */
+
+class Stack {
+  constructor() {
+    this.items = [];
+  }
+  push(element) {
+    this.items.push(element);
+  }
+  pop() {
+    return this.items.pop();
+  }
+  peek() {
+    return this.items[this.items.length - 1];
+  }
+  isEmpty() {
+    return this.items.length === 0;
+  }
+  size() {
+    return this.items.length;
+  }
+}
+```
+
+栈结构实现10进制转二进制：
+
+```js
+function dec2bin(num) {
+  // 1. 创建Stack
+  const stack = new Stack();
+  // 2. 循环取余数
+  while (num > 0) {
+    let remainder = num % 2;
+    num = Math.floor(num / 2);
+    stack.push(remainder);
+  }
+  // 3. 拼接字符串
+  let binString = "";
+  while (!stack.isEmpty()) {
+    binString += stack.pop();
+  }
+  return binString;
+}
+console.log(dec2bin(10)); // 1010
+console.log(dec2bin(100)); // 1100100
+console.log(dec2bin(1000)); // 1111101000
+```
+
+## 3. 队列
+
+队列（queue），是一种受限的数据结构（线性表），具有 **先进先出（FIFO First In First Out）**的特点。
+
+首先之处在于队列只允许在表的前端（front）进行删除操作，而在表的后端（rear）进行插入操作。
+
+![](./IMGS/queue.jpg)
+
+打印队列/线程队列/事件队列/任务队列
+
+**数组实现：**
+
+```js
+/**
+ * 1. enqueue(element)：向队列尾部添加一个（或多个）新的项
+ * 2. dequeue()：移除队列的第一（即排在队列最前面的）项，并返回被移除的元素
+ * 3. front()：返回队列中第一个元素-最先被添加，也将是最先被移除的元素。队列不做任何变动（不溢出元素，只返回元素信息）
+ * 4. isEmpty()：如果队列中不包含任何元素，返回true，否则返回false
+ * 5. size()：返回队列包含的元素个数，与数组的length属性雷士
+ */
+class Queue {
+  constructor() {
+    this.items = [];
+  }
+  enqueue(element) {
+    this.items.push(element);
+  }
+  dequeue() {
+    return this.items.shift();
+  }
+  front() {
+    if (this.isEmpty()) return null;
+    return this.items[0];
+  }
+  isEmpty() {
+    return this.items.length === 0;
+  }
+  size() {
+    return this.items.length;
+  }
+}
+
+module.exports = Queue;
+```
+
+应用场景：**击鼓传花**
+
+## 4. 优先级队列
+
+优先级队列的特点：
+
+- 我们知道，普通的队列插入一个元素，数据会被放在后端，并且需要前面所有的元素都处理完成后才会处理前面的数据。
+- 但是优先级队列，在插入一个元素的时候会考虑该数据的优先级。
+- 和其他数据优先级进行比较，
+- 比较完成后，可以得出这个元素在队列中正确的位置。
+- 其他处理方式，和基本队列的处理方式一样。
+
+**数组实现：**
+
+```js
+class PriorityQueue extends Queue {
+  enqueue(element, priority) {
+    // 1. 创建QueueElement对象
+    const queueElement = { element, priority };
+    // 2. 考虑如何插入新的元素
+    if (this.isEmpty()) {
+      this.items.push(queueElement);
+    } else {
+      let added = false;
+      for (let i = 0; i < this.items.length; i++) {
+        if (this.items[i].priority > queueElement.priority) {
+          this.items.splice(i, 0, queueElement);
+          added = true;
+          break;
+        }
+      }
+      if (!added) {
+        this.items.push(queueElement);
+      }
+    }
+  }
+}
+```
+
+## 5. 链表
+
+链表（线性结构）和数组一样，可用于 **存储一系列的元素**，但是链表和数组的实现机制完全不同。
+
+**回顾 >**
+
+数组：
+
+- 要存储多个元素，数组（或称为列表）可能是 **最常用** 的数据结构。
+- 几乎每一种编程语言都有默认实现 **数组结构** 。
+- 但是数组也有很多缺点：
+  - 数组的创建通常需要申请一段 **连续的内存空间** （一整块的内存），并且大小是固定的（大多数编程语言数组都是固定的），所以当当前数组 **不能满足容量需求** 时，需要 **扩容** 。（一般情况下是申请一个更大的数组，比如2倍，然后将原数组中的元素复制过去）
+  - 而且在数组开头或中间位置插入数据的成本很高，需要进行大量元素的位移。
+  - 尽管我们已经学过的JavaScript的Array类方法可以帮我们做这些事，但背后的原理依然是这样。
+
+**链表 >**
+
+- 要存储多个元素，另外一个选择就是链表。
+- 但不同于数组，链表中的元素在内存中 **不必是连续的空间**。
+- 链表的每个元素由一个存储 **元素本身的节点** 和一个 **指向下一个元素的引用** （有些语言成为指针或者链接）组成。
+
+相对于数组，链表有一些优点：
+
+- 内存空间不是必须连续的，可以充分利用计算机的内存，实现灵活的 **内存动态管理**。
+- 链表不必在创建时就 **确定大小**，并且大小可以 **无限的延伸** 下去。
+- 链表在 **插入和删除** 数据时，**时间复杂度** 可以达到 $O(1)$ ，相对数组效率高很多。
+
+相对于数组，链表有一些缺点：
+
+- 链表访问任何一个位置的元素时，都需要 **从头开始访问** （无法跳过第一个元素访问任何一个元素）。
+- 无法通过下标直接访问元素，需要从头一个个访问，直到找到对应的元素。
+
+**那到底什么链表呢？**
+
+其实上面我们已经简单的提过了链表的结构，我们这里更加详细的分析一下，链表类似于货车：有一个火车头，火车头会链接一个节点，节点上有乘客（类似于数据），并且这个节点会链接下一个节点，以此类推。
+
+![](./IMGS/linked_list_train.png)
+
 
 
 # 四、排序算法
