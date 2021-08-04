@@ -293,11 +293,193 @@ class PriorityQueue extends Queue {
 - 链表访问任何一个位置的元素时，都需要 **从头开始访问** （无法跳过第一个元素访问任何一个元素）。
 - 无法通过下标直接访问元素，需要从头一个个访问，直到找到对应的元素。
 
+### 
+
 **那到底什么链表呢？**
 
 其实上面我们已经简单的提过了链表的结构，我们这里更加详细的分析一下，链表类似于货车：有一个火车头，火车头会链接一个节点，节点上有乘客（类似于数据），并且这个节点会链接下一个节点，以此类推。
 
 ![](./IMGS/linked_list_train.png)
+
+我们来看一个更加形象的图：
+
+
+
+
+
+![](./IMGS/linked_list_node.png)
+
+### 5.1. 单向链表
+
+- 单向链表只能 **从头遍历到尾** 或者 **从尾遍历到头** （一般从头到尾）。
+- 也就是链表相连的过程是 **单向** 的。
+- 实现的原理是上一个节点中有一个指向下一个的 **引用**。
+
+单向列表有一个比较明显的缺点：
+
+- 我们可以轻松的到达 **下一个节点**，但是回到 **前一个节点** 是很难的，但是，实际开发中，经常会遇到需要回到上一个节点的情况。
+- 举个例子：假设一个文本编辑用 **链表** 来存储文本，每一行用一个 **String对象** 存储在 **链表的一个节点** 中，当编辑器用户 **向下移动光标** 时，链表直接操作到 **下一个节点** 即可，但是当用于将光标 **向上移动** 呢？这个时候为了回到 **上一个节点**，我们可能需要 **从first开始**，一次走到想要的节点上。
+
+**实现：**
+
+```javascript
+// 节点对象
+class LinkedListNode {
+  constructor(data) {
+    // 保存元素
+    this.data = data;
+    // 指向下一个节点
+    this.next = null;
+  }
+}
+
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.length = 0;
+  }
+  // 向链表尾部添加一个新的项
+  append(data) {
+    // 1. 根据data创建Node对象
+    const newNode = new LinkedListNode(data);
+    // 2. 追加到最后
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+    this.length++;
+  }
+  // 向链表的特定位置插入一个新的项
+  insert(position, data) {
+    // 1. 判断越界问题
+    if (position < 0 || position > this.length) return false;
+    // 2. 创建新的节点
+    const newNode = new LinkedListNode(data);
+    // 3. 插入元素
+    if (position === 0) {
+      newNode.next = this.head;
+      this.head = newNode;
+    } else {
+      let index = 0;
+      let current = this.head;
+      let previous = null;
+      while (index++ < position) {
+        previous = current;
+        current = current.next;
+      }
+      previous.next = newNode;
+      newNode.next = current;
+    }
+    this.length++;
+    return true;
+  }
+  // 获取对应位置的元素
+  get(position) {
+    // 1. 处理越界问题
+    if (position < 0 || position > this.length - 1) return null;
+    // 2. 查找该位置的元素
+    let index = 0;
+    let current = this.head;
+    while (index++ < position) {
+      current = current.next;
+    }
+    return current.data;
+  }
+  // 返回元素在链表中的索引，如果链表中没有该元素则返回-1
+  indexOf(data) {
+    // 1. 获取第一个元素
+    let current = this.head;
+    // 2. 开始查找
+    let index = 0;
+    while (current) {
+      if (current.data === data) {
+        return index;
+      }
+      current = current.next;
+      index++;
+    }
+    return -1;
+  }
+  // 移除某个位置的元素
+  removeAt(position) {
+    // 1. 处理越界
+    if (position < 0 || position > this.length - 1) return null;
+    // 2. 删除元素
+    let index = 0;
+    let current = this.head;
+    let previous = null;
+    if (position === 0) {
+      this.head = current.next;
+    } else {
+      while (index++ < position) {
+        previous = current;
+        current = current.next;
+      }
+      previous.next = current.next;
+    }
+    this.length--;
+    return current.data;
+  }
+  // 修改某个位置的元素
+  update(positon, data) {
+    // 1. 处理越界
+    if (positon < 0 || positon > this.length - 1) return null;
+    // 2. 删除position位置的元素
+    const result = this.removeAt(positon);
+    // 3. 插入position位置data元素
+    this.insert(positon, data);
+    return result;
+  }
+  // 移除链表中的一项
+  remove(data) {
+    // 1. 获取元素位置
+    const index = this.indexOf(data);
+    // 2. 删除该位置的元素
+    if (index !== -1) {
+      this.removeAt(index);
+    }
+  }
+  // 判断是否为空链表
+  isEmpty() {
+    return this.length === 0;
+  }
+  // size
+  size() {
+    return this.length;
+  }
+  // 由于链表项使用了Node类，就需要重写继承自JavaScript对象默认的toString方法，让其只输出元素的值
+  toString() {}
+}
+module.exports = LinkedList;
+```
+
+### 5.2. 双向链表
+
+双向链表，既可以 **从头遍历到尾**，又可以 **从尾遍历到头**，也就是链表相连的过程是 **双向** 的。
+
+实现原理：一个节点既有 **向前连接的引用**，也有一个 **向后连接的引用**。
+
+双向链表可以有效地解决单向链表中提到的问题。
+
+**双向链表有什么缺点呢？**
+
+- 每次在 **插入或删除** 某个节点时，需要处理四个引用，而不是两个，也就是实现起来要困难一些。
+- 并且相当于单向链表，必然占用 **内存空间更大** 一些。
+- 但是这些缺点和我们使用起来的方便程度相比，是微不足道的。
+
+**双向链表的特点：**
+
+![](./IMGS/linked_list_double.png)
+
+- 可以使用一个head和一个tail分别指向头部和尾部的节点。
+- 每个节点都由三部分组成：前一个节点的指针（prev）、保存的元素（item）、后一个节点的指针（next）。
+- 双向链表的第一个节点的prev是null。
+- 双向链表的最后一个节点的next是null。
 
 
 

@@ -2,7 +2,7 @@
  * @Author: Lee
  * @Date: 2021-07-30 16:45:30
  * @LastEditors: Lee
- * @LastEditTime: 2021-08-03 11:45:05
+ * @LastEditTime: 2021-08-04 16:20:23
  */
 
 /**
@@ -14,7 +14,7 @@
  * - size()：返回栈里的元素个数。这个方法和数组的length很类似。
  */
 
-class Stack {
+export class Stack {
   constructor() {
     this.items = [];
   }
@@ -35,5 +35,3 @@ class Stack {
     return this.items.length;
   }
 }
-
-module.exports = Stack;

@@ -2,7 +2,7 @@
  * @Author: Lee
  * @Date: 2021-08-03 11:25:47
  * @LastEditors: Lee
- * @LastEditTime: 2021-08-03 15:31:17
+ * @LastEditTime: 2021-08-04 16:08:53
  */
 
 /**
@@ -13,7 +13,7 @@
  * 5. size()：返回队列包含的元素个数，与数组的length属性雷士
  */
 // 普通队列
-class Queue {
+export class Queue {
   constructor() {
     this.items = [];
   }
@@ -35,7 +35,7 @@ class Queue {
   }
 }
 // 优先级队列
-class PriorityQueue extends Queue {
+export class PriorityQueue extends Queue {
   enqueue(element, priority) {
     // 1. 创建QueueElement对象
     const queueElement = { element, priority };
@@ -57,7 +57,3 @@ class PriorityQueue extends Queue {
     }
   }
 }
-module.exports = {
-  Queue,
-  PriorityQueue,
-};
