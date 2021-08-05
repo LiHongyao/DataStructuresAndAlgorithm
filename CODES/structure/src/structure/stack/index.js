@@ -2,7 +2,7 @@
  * @Author: Lee
  * @Date: 2021-07-30 16:45:30
  * @LastEditors: Lee
- * @LastEditTime: 2021-08-04 16:20:23
+ * @LastEditTime: 2021-08-05 17:25:30
  */
 
 /**
@@ -14,6 +14,8 @@
  * - size()：返回栈里的元素个数。这个方法和数组的length很类似。
  */
 
+/**
+ * 数组实现
 export class Stack {
   constructor() {
     this.items = [];
@@ -33,5 +35,32 @@ export class Stack {
   }
   size() {
     return this.items.length;
+  }
+}
+*/
+
+/**
+ * 链表实现
+ */
+import { DoubleLinkedList } from "../linked_list/index.js";
+export class Stack {
+  constructor() {
+    // 创建链表
+    this.items = new DoubleLinkedList();
+  }
+  push(data) {
+    this.items.append(data);
+  }
+  pop() {
+    return this.items.removeAt(this.items.size() - 1);
+  }
+  peek() {
+    return this.items.get(this.items.size() - 1);
+  }
+  isEmpty() {
+    return this.items.size() === 0;
+  }
+  size() {
+    return this.items.size();
   }
 }

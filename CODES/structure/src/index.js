@@ -2,14 +2,16 @@
  * @Author: Lee
  * @Date: 2021-07-30 16:47:28
  * @LastEditors: Lee
- * @LastEditTime: 2021-08-04 17:09:59
+ * @LastEditTime: 2021-08-05 17:43:52
  */
 
 import { Stack } from "./structure/stack/index.js";
 import { Queue, PriorityQueue } from "./structure/queue/index.js";
 import { LinkedList, DoubleLinkedList } from "./structure/linked_list/index.js";
 // 栈
-console.log("----------------------- 【栈结构】 -----------------------");
+console.log("-----------------------------------------------");
+console.log("------------ 01. 【栈】");
+console.log("-----------------------------------------------");
 const stack = new Stack();
 stack.push(1);
 stack.push(2);
@@ -44,7 +46,9 @@ console.log(dec2bin(10)); // 1010
 console.log(dec2bin(100)); // 1100100
 console.log(dec2bin(1000)); // 1111101000
 
-console.log("----------------------- 【队列】 -----------------------");
+console.log("-----------------------------------------------");
+console.log("------------ 02. 【队列】");
+console.log("-----------------------------------------------");
 
 const queue = new Queue();
 queue.enqueue("A");
@@ -77,7 +81,9 @@ function passGame(nameList, num) {
 
 console.log(`击鼓传花：`, passGame(["A", "B", "C", "D", "E"], 3));
 
-console.log("----------------------- 【优先级队列】 -----------------------");
+console.log("-----------------------------------------------");
+console.log("------------ 03. 【优先级队列】");
+console.log("-----------------------------------------------");
 
 const priorityQueue = new PriorityQueue();
 priorityQueue.enqueue("李鸿耀", 1);
@@ -88,13 +94,16 @@ priorityQueue.enqueue("宁玮君", 4);
 console.log(priorityQueue.items);
 console.log(priorityQueue.front());
 
-console.log("----------------------- 【链表】 -----------------------");
+console.log("-----------------------------------------------");
+console.log("------------ 04. 【链表】");
+console.log("-----------------------------------------------");
 
 const linkedList = new LinkedList();
 linkedList.append("成都");
 linkedList.append("重庆");
 linkedList.append("贵阳");
 linkedList.append("昆明");
+console.log(linkedList);
 linkedList.insert(2, "自贡");
 console.log(linkedList);
 console.log(linkedList.get(0));
@@ -118,7 +127,9 @@ console.log(linkedList);
 console.log(linkedList.isEmpty());
 console.log(linkedList.size());
 
-console.log("----------------------- 【双向链表】 -----------------------");
+console.log("-----------------------------------------------");
+console.log("------------ 05. 【双向链表】");
+console.log("-----------------------------------------------");
 const doubleLinkedList = new DoubleLinkedList();
 doubleLinkedList.append("周瑜");
 doubleLinkedList.append("廉颇");
@@ -129,3 +140,18 @@ doubleLinkedList.insert(3, "刘备");
 console.log(doubleLinkedList);
 doubleLinkedList.insert(2, "曹操");
 console.log(doubleLinkedList);
+console.log("第0个元素：", doubleLinkedList.get(0));
+console.log("第3个元素：", doubleLinkedList.get(3));
+console.log("第4个元素：", doubleLinkedList.get(4));
+console.log("刘备的下标是：", doubleLinkedList.indexOf("刘备"));
+console.log(doubleLinkedList.removeAt(0));
+console.log(doubleLinkedList);
+console.log(doubleLinkedList.removeAt(3));
+console.log(doubleLinkedList);
+console.log(doubleLinkedList.removeAt(1));
+console.log(doubleLinkedList);
+doubleLinkedList.remove("廉颇");
+console.log(doubleLinkedList);
+
+console.log(doubleLinkedList.size());
+console.log(doubleLinkedList.isEmpty());

@@ -113,7 +113,7 @@
 
 ## 2. 栈 
 
-我们知道数组是一种线性结构，并且可以在数组的人以位置插入和删除数据。但是有时候，我们为了实现某些功能，必须对这种任意性加以限制，而栈和队列，就是比较常见的受限的线性结构。栈的特点是：**后进先出（LIFO)**
+我们知道数组是一种线性结构，并且可以在数组的任意位置插入和删除数据。但是有时候，我们为了实现某些功能，必须对这种任意性加以限制，而栈和队列，就是比较常见的受限的线性结构。栈的特点是：**后进先出（LIFO)**
 
 
 
@@ -124,19 +124,18 @@
 ```javascript
 /**
  * 栈结构方法
- * - push(element)：添加一个新元素到栈顶位置
- * - pop()：移除栈顶的怨怒是，同时返回被移除的元素
+ * - push(data)：添加一个新元素到栈顶位置
+ * - pop()：移除栈顶的元素，同时返回被移除的元素
  * - peek()：返回栈顶的元素，不对栈做任何修改（这个方法不会移除栈顶的元素，仅仅返回它）
  * - isEmpty()：如果栈里没有任何元素就返回true，否则返回false
  * - size()：返回栈里的元素个数。这个方法和数组的length很类似。
  */
-
 class Stack {
   constructor() {
     this.items = [];
   }
-  push(element) {
-    this.items.push(element);
+  push(data) {
+    this.items.push(data);
   }
   pop() {
     return this.items.pop();
@@ -181,7 +180,7 @@ console.log(dec2bin(1000)); // 1111101000
 
 队列（queue），是一种受限的数据结构（线性表），具有 **先进先出（FIFO First In First Out）**的特点。
 
-首先之处在于队列只允许在表的前端（front）进行删除操作，而在表的后端（rear）进行插入操作。
+受限之处在于队列只允许在表的前端（front）进行删除操作，而在表的后端（rear）进行插入操作。
 
 ![](./IMGS/queue.jpg)
 
@@ -280,7 +279,7 @@ class PriorityQueue extends Queue {
 
 - 要存储多个元素，另外一个选择就是链表。
 - 但不同于数组，链表中的元素在内存中 **不必是连续的空间**。
-- 链表的每个元素由一个存储 **元素本身的节点** 和一个 **指向下一个元素的引用** （有些语言成为指针或者链接）组成。
+- 链表的每个元素由一个存储 **元素本身的节点** 和一个 **指向下一个元素的引用** （有些语言称为指针或者链接）组成。
 
 相对于数组，链表有一些优点：
 
@@ -293,11 +292,11 @@ class PriorityQueue extends Queue {
 - 链表访问任何一个位置的元素时，都需要 **从头开始访问** （无法跳过第一个元素访问任何一个元素）。
 - 无法通过下标直接访问元素，需要从头一个个访问，直到找到对应的元素。
 
-### 
+
 
 **那到底什么链表呢？**
 
-其实上面我们已经简单的提过了链表的结构，我们这里更加详细的分析一下，链表类似于货车：有一个火车头，火车头会链接一个节点，节点上有乘客（类似于数据），并且这个节点会链接下一个节点，以此类推。
+其实上面我们已经简单的提过了链表的结构，我们这里更加详细的分析一下，链表类似于火车：有一个火车头，火车头会链接一个节点，节点上有乘客（类似于数据），并且这个节点会链接下一个节点，以此类推。
 
 ![](./IMGS/linked_list_train.png)
 
@@ -312,18 +311,15 @@ class PriorityQueue extends Queue {
 ### 5.1. 单向链表
 
 - 单向链表只能 **从头遍历到尾** 或者 **从尾遍历到头** （一般从头到尾）。
-- 也就是链表相连的过程是 **单向** 的。
+- 也就是说链表相连的过程是 **单向** 的。
 - 实现的原理是上一个节点中有一个指向下一个的 **引用**。
-
-单向列表有一个比较明显的缺点：
-
-- 我们可以轻松的到达 **下一个节点**，但是回到 **前一个节点** 是很难的，但是，实际开发中，经常会遇到需要回到上一个节点的情况。
-- 举个例子：假设一个文本编辑用 **链表** 来存储文本，每一行用一个 **String对象** 存储在 **链表的一个节点** 中，当编辑器用户 **向下移动光标** 时，链表直接操作到 **下一个节点** 即可，但是当用于将光标 **向上移动** 呢？这个时候为了回到 **上一个节点**，我们可能需要 **从first开始**，一次走到想要的节点上。
 
 **实现：**
 
 ```javascript
-// 节点对象
+/**
+ * 节点对象
+ */
 class LinkedListNode {
   constructor(data) {
     // 保存元素
@@ -332,17 +328,30 @@ class LinkedListNode {
     this.next = null;
   }
 }
-
-class LinkedList {
+/**
+ * 单向链表
+ * - append(data)：向链表尾部添加一个新的项
+ * - insert(position, data)：向链表的特定位置插入一个新的项
+ * - get(position)：获取对应位置的元素
+ * - indexOf(data)：返回元素在链表中的索引，如果链表中没有该元素则返回-1
+ * - removeAt(position)：移除某个位置的元素
+ * - update(positon, data)：修改某个位置的元素
+ * - remove(data)：移除链表中的一项
+ * - isEmpty()：判断是否为空链表
+ * - size()
+ */
+export class LinkedList {
   constructor() {
     this.head = null;
     this.length = 0;
   }
-  // 向链表尾部添加一个新的项
+
   append(data) {
     // 1. 根据data创建Node对象
     const newNode = new LinkedListNode(data);
-    // 2. 追加到最后
+    // 2. 追加到最后，考虑两种情况：
+    // - 如果当前链表为空链表，直接让head指向新建节点即可；
+    // - 否则，依次遍历节点，找到最后一个节点，将其next指向新建节点；
     if (!this.head) {
       this.head = newNode;
     } else {
@@ -354,13 +363,15 @@ class LinkedList {
     }
     this.length++;
   }
-  // 向链表的特定位置插入一个新的项
   insert(position, data) {
     // 1. 判断越界问题
     if (position < 0 || position > this.length) return false;
     // 2. 创建新的节点
     const newNode = new LinkedListNode(data);
-    // 3. 插入元素
+    // 3. 插入元素，考虑两种情况
+    // - 如果插入在第1个位置，则将新节点的next指向head，并将head指向新节点。
+    // - 否则，遍历找到对应位置的节点（current）和其上一个节点（previous）
+    // - 然后将previous.next指向新节点，并将新节点的nex指向current节点即可。
     if (position === 0) {
       newNode.next = this.head;
       this.head = newNode;
@@ -378,7 +389,6 @@ class LinkedList {
     this.length++;
     return true;
   }
-  // 获取对应位置的元素
   get(position) {
     // 1. 处理越界问题
     if (position < 0 || position > this.length - 1) return null;
@@ -390,7 +400,6 @@ class LinkedList {
     }
     return current.data;
   }
-  // 返回元素在链表中的索引，如果链表中没有该元素则返回-1
   indexOf(data) {
     // 1. 获取第一个元素
     let current = this.head;
@@ -405,11 +414,13 @@ class LinkedList {
     }
     return -1;
   }
-  // 移除某个位置的元素
   removeAt(position) {
     // 1. 处理越界
     if (position < 0 || position > this.length - 1) return null;
-    // 2. 删除元素
+    // 2. 删除元素，考虑两种情况：
+    // - 如果移除第1个元素，则直接将head指向head.next即可。
+    // - 否则，遍历找到要移除的元素（current）及其上一个元素（previous）
+    // - 然后将previous.next指向current.next即可。
     let index = 0;
     let current = this.head;
     let previous = null;
@@ -425,7 +436,6 @@ class LinkedList {
     this.length--;
     return current.data;
   }
-  // 修改某个位置的元素
   update(positon, data) {
     // 1. 处理越界
     if (positon < 0 || positon > this.length - 1) return null;
@@ -435,7 +445,6 @@ class LinkedList {
     this.insert(positon, data);
     return result;
   }
-  // 移除链表中的一项
   remove(data) {
     // 1. 获取元素位置
     const index = this.indexOf(data);
@@ -443,22 +452,23 @@ class LinkedList {
     if (index !== -1) {
       this.removeAt(index);
     }
-  }
-  // 判断是否为空链表
+  } 
   isEmpty() {
     return this.length === 0;
   }
-  // size
   size() {
     return this.length;
   }
-  // 由于链表项使用了Node类，就需要重写继承自JavaScript对象默认的toString方法，让其只输出元素的值
-  toString() {}
 }
-module.exports = LinkedList;
+
 ```
 
 ### 5.2. 双向链表
+
+单向列表有一个比较明显的缺点：
+
+- 我们可以轻松的到达 **下一个节点**，但是回到 **前一个节点** 是很难的，但是，实际开发中，经常会遇到需要回到上一个节点的情况。
+- 举个例子：假设一个文本编辑用 **链表** 来存储文本，每一行用一个 **String对象** 存储在 **链表的一个节点** 中，当编辑器用户 **向下移动光标** 时，链表直接操作到 **下一个节点** 即可，但是当用于将光标 **向上移动** 呢？这个时候为了回到 **上一个节点**，我们可能需要 **从first开始**，一次走到想要的节点上。
 
 双向链表，既可以 **从头遍历到尾**，又可以 **从尾遍历到头**，也就是链表相连的过程是 **双向** 的。
 
@@ -480,6 +490,149 @@ module.exports = LinkedList;
 - 每个节点都由三部分组成：前一个节点的指针（prev）、保存的元素（item）、后一个节点的指针（next）。
 - 双向链表的第一个节点的prev是null。
 - 双向链表的最后一个节点的next是null。
+
+**实现：**
+
+```js
+/**
+ * 双向链表
+ */
+class DoubleLinkedListNode extends LinkedListNode {
+  constructor(data) {
+    super(data);
+    this.prev = null;
+  }
+}
+
+export class DoubleLinkedList extends LinkedList {
+  constructor() {
+    super();
+    this.tail = null;
+  }
+  append(data) {
+    // 1. 根据data创建Node对象
+    const newNode = new DoubleLinkedListNode(data);
+    // 2. 追加元素，考虑两种情况：
+    // - 如果当前链表中一个元素都没有，则让head和tail都指向新节点
+    // - 否则让最后一个元素的next指向新节点；新节点的prev指向tail；tail指向新节点；
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      newNode.prev = this.tail;
+      this.tail = newNode;
+    }
+    this.length++;
+  }
+  // 向链表的特定位置插入一个新的项
+  insert(position, data) {
+    // 1. 判断越界问题
+    if (position < 0 || position > this.length) return false;
+    // 2. 创建新的节点
+    const newNode = new DoubleLinkedListNode(data);
+    // 3. 判断多种插入情况
+    if (position === 0) {
+      // 头部插入
+      if (!this.head) {
+        this.head = newNode;
+        this.tail = newNode;
+      } else {
+        newNode.next = this.head;
+        this.head.prev = newNode;
+        this.head = newNode;
+      }
+    } else if (position === this.length) {
+      // 尾部插入
+      this.tail.next = newNode;
+      newNode.prev = this.tail;
+      this.tail = newNode;
+    } else {
+      // 中间插入
+      let index = 0;
+      let current = this.head;
+      while (index++ < position) {
+        current = current.next;
+      }
+      // 交换节点信息
+      current.prev.next = newNode;
+      newNode.prev = current.prev;
+      newNode.next = current;
+      current.prev = newNode;
+    }
+    this.length++;
+    return true;
+  }
+  removeAt(position) {
+    // 1. 处理越界
+    if (position < 0 || position > this.length - 1) return null;
+    // 2. 根据不同的情况来删除元素
+    let index = 0;
+    let current = this.head;
+    if (position === 0) {
+      if (this.length === 1) {
+        this.head = null;
+        this.tail = null;
+      } else {
+        this.head = this.head.next;
+        this.head.prev = null;
+      }
+    } else if (position === this.length - 1) {
+      current = this.tail;
+      this.tail = this.tail.prev;
+      this.tail.next = null;
+    } else {
+      while (index++ < position) {
+        current = current.next;
+      }
+      current.prev.next = current.next;
+      current.next.prev = current.prev;
+    }
+    this.length--;
+    return current.data;
+  }
+}
+```
+
+### 5.3. 拓展
+
+**链表实现栈：**
+
+```javascript
+import { DoubleLinkedList } from "../linked_list/index.js";
+export class Stack {
+  constructor() {
+    // 创建链表
+    this.items = new DoubleLinkedList();
+  }
+  push(data) {
+    this.items.append(data);
+  }
+  pop() {
+    return this.items.removeAt(this.items.size() - 1);
+  }
+  peek() {
+    return this.items.get(this.items.size() - 1);
+  }
+  isEmpty() {
+    return this.items.size() === 0;
+  }
+  size() {
+    return this.items.size();
+  }
+}
+```
+
+## 6. 哈希表
+
+哈希表是一种非常重要的数据结构。几乎所有的编程语言都有 **直接或者间接** 的应用这种数据结构。
+
+哈希表通常是基于 **数组** 实现的，但是相对于数组，它也有很多的优势：
+
+- 它可以提供非常快速的 **插入-删除-查找操作**
+- 无论多少数据，插入和删除值需要接近常量的时间：即 $O(1)$ 的时间级，实际上，只需要 **几个机器指令** 即可完成
+- 哈希表的速度比 **树还要快**，基本可以瞬间查找到想要的元素
+- 哈希表相对于树来说编码要容易很多
 
 
 
