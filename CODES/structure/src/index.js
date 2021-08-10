@@ -2,7 +2,7 @@
  * @Author: Lee
  * @Date: 2021-07-30 16:47:28
  * @LastEditors: Lee
- * @LastEditTime: 2021-08-05 17:43:52
+ * @LastEditTime: 2021-08-10 15:41:27
  */
 
 import { Stack } from "./structure/stack/index.js";
