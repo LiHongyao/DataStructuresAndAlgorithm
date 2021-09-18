@@ -2,7 +2,7 @@
  * @Author: Lee
  * @Date: 2021-08-04 10:48:15
  * @LastEditors: Lee
- * @LastEditTime: 2021-08-05 16:48:27
+ * @LastEditTime: 2021-09-18 14:06:43
  */
 
 /**
@@ -16,6 +16,7 @@ class LinkedListNode {
     this.next = null;
   }
 }
+
 /**
  * 单向链表
  * - append(data)：向链表尾部添加一个新的项
