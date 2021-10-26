@@ -2,7 +2,7 @@
  * @Author: Lee
  * @Date: 2021-07-30 16:45:30
  * @LastEditors: Lee
- * @LastEditTime: 2021-09-18 11:30:53
+ * @LastEditTime: 2021-10-26 10:45:08
  */
 
 /**
@@ -15,7 +15,7 @@
  */
 
 /**
- * 数组实现
+ * 1. 数组实现
 export class Stack {
   constructor() {
     this.items = [];
@@ -40,9 +40,9 @@ export class Stack {
 */
 
 /**
- * 链表实现
+ * 2. 链表实现
  */
-import { DoubleLinkedList } from "../linked_list/index.js";
+import { DoubleLinkedList } from '../linked_list/index.js';
 export class Stack {
   constructor() {
     // 创建链表
