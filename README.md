@@ -952,7 +952,463 @@ $$
 
 ### 6.8. 哈希表实现
 
+#### 6.8.1. 哈希函数
 
+```js
+export class HashTable {
+  constructor() {
+    this.storage = []; // 作为数组，存放元素
+    this.count = 0; // 用于记录HashTable存放的数量
+    this.limit = 8; // 表示数组当前的常数
+  }
+  /**
+   * 哈希函数
+   * 1. 将字符串转换成比较大的数字:hashCod
+   * 2. 将数字大的hashCode压缩到数组的（大小）范围内
+   * @param {*} str
+   * @param {*} size
+   * @returns 下标
+   */
+  hashFunc(str, size) {
+    // 1. 定义hashCode
+    let hashCode = 0;
+    // 2. 霍纳算法来计算hashCode的值
+    for (let i = 0; i < str.length; i++) {
+      hashCode = 31 * hashCode + str.charCodeAt(i);
+    }
+    // 3. 取余操作压缩到数组的（大小）范围内
+    const index = hashCode % size;
+    return index;
+  }
+}
+```
+
+#### 6.8.2. 存放元素
+
+```js
+/**
+ * 放入/修改元素：HashMap -> { key, value }
+ * @param {*} key
+ * @param {*} value
+ */
+put(key, value) {
+  // 1. 根据key获取对应的index
+  const index = this.hashFunc(key, this.limit);
+  // 2. 根据index获取对应的bucket
+  let bucket = this.storage[index];
+  // 3. 判断bucket是否存在，如果不存在则创建bucket（为了低耦合，这里直接用数组）
+  if (!bucket) {
+    bucket = [];
+    this.storage[index] = bucket;
+  }
+  // 4.线性查找bucket中每一个key是否等于传入的key（判断是插入还是修改）
+  let override = false;
+  for (let i = 0; i < bucket.length; i++) {
+    const [k] = bucket[i];
+    // 修改
+    if (k === key) {
+      bucket[i][1] = value;
+      override = true;
+      break;
+    }
+  }
+  // 5. 如果没有覆盖，那么就是新增
+  if (!override) {
+    bucket.push([key, value]);
+    this.count++;
+  }
+}
+```
+
+#### 6.8.3. 获取元素
+
+```js
+/**
+ * 获取元素
+ * @param {*} key
+ */
+get(key) {
+  // 1. 根据key获取index
+  const index = this.hashFunc(key, this.limit);
+  // 2. 根据下标值获取bucket
+  let bucket = this.storage[index];
+  if (!bucket) {
+    return null;
+  }
+  // 3. 线性查找
+  for (let i = 0; i < bucket.length; i++) {
+    const [k, v] = bucket[i];
+    if (k === key) {
+      return v;
+    }
+  }
+  return null;
+}
+```
+
+#### 6.8.4. 删除元素
+
+```js
+/**
+ * 获取元素
+ * @param {*}} key
+ */
+remove(key) {
+  // 1. 根据key获取index
+  const index = this.hashFunc(key, this.limit);
+  // 2. 根据下标值获取bucket
+  const bucket = this.storage[index];
+  if (!bucket) {
+    return null;
+  }
+  // 3. 线性查找，删除元素并将其返回
+  for (let i = 0; i < bucket.length; i++) {
+    const [k, v] = bucket[i];
+    if (k === key) {
+      bucket.splice(i, 1);
+      this.count--;
+      return v;
+    }
+  }
+  return null;
+}
+```
+
+#### 6.8.5. 其他方法
+
+```js
+/**
+ * 是否为空
+ * @returns
+ */
+isEmpty() {
+  return this, this.count === 0;
+}
+/**
+ * 长度
+ * @returns
+ */
+size() {
+  return this.count;
+}
+```
+
+#### 6.8.6. 扩容
+
+**为什么需要扩容？**
+
+- 目前，我们是将所有的数据项放在 **长度为7的数组** 中的。
+- 因为我们使用的是：**<u>链地址法</u>**，`loadFactor（装填因子）` 可能大于1，所以这个哈希表可以无限制的插入新数据。
+- 但是，随着 **数据量的增多**，每一个 `index` 对用的 `bucket` 会越来越长，也就造成 **效率的降低**。
+- 所以，在合适的情况对数组进行 **扩容**，比如扩容两倍。
+
+**如何进行扩容？**
+
+- 扩容可以简单的将容量 **增大两倍**（不是质数么？质数的问题后面再讨论）
+- 但是这种情况下，所有的数据项 **一定要同时进行修改** （重新调用哈希函数，来获取到不同的位置）
+- 比如 `hashCode = 12` 的数据项，在 `length = 8` 的时候，`index = 4`，在长度为16的时候呢？`index = 12`
+- 这是一个 **耗时的过程**，但是如果 **数组需要扩容**， 那么这个过程是 **必要的**。
+
+**什么情况下扩容呢？**
+
+- 比较常见的情况是 `loadFactor > 0.75` 的时候进行扩容。
+- 比如Java的哈希表就是在装填因子大于 0.75 的时候，对哈希表进行扩容。
+
+**实现扩容**
+
+当我们在不停的存取元素的时候，我们需要扩容，同样的，当我们再删除元素的时候，太大空间会造成不必要的内存消耗，所以我们也需要在适当的情况减少容量。接下来我们封装一个方法 `resize` 调整容量。
+
+```js
+/**
+ * 扩容/降容
+ * @param {*} newLimit
+ */
+resize(newLimit) {
+  // 1. 保存旧的数组中的内容
+  let oldStorage = this.storage;
+  // 2. 重置属性
+  this.limit = newLimit;
+  this.storage = [];
+  this.count = 0;
+  // 3. 取出oldStorage所有的元素，重新放入到storage
+  oldStorage.forEach((bucket) => {
+    if (!bucket) {
+      return;
+    }
+    for (let i = 0; i < bucket.length; i++) {
+      const [k, v] = bucket[i];
+      this.put(k, v);
+    }
+  });
+}
+```
+
+然后在添加成功之后判断装填因子**<u>大于0.75</u>**时进行扩容
+
+```js
+if (this.count > this.limit * MAX_LOAD_FACTOR) {
+	this.resize(this.limit * 2);
+}
+```
+
+并且在删除成功之后判断装填因子**<u>小于0.25</u>**时减少容量
+
+```js
+if (this.limit > 8 && this.count < this.limit * MIN_LOAD_FACTOR) {
+  this.resize(Math.floor(this.limit / 2));
+}
+```
+
+#### 6.8.7. 容量质数
+
+我们前面提到过，容量最好时质数：
+
+- 虽然在链地址法中将容量设置为质数，没有在开放地址法中重要。
+- 但是其实链地址法中质数作为容量也更利于数据的均匀分布，所以，我们还是完成一下这个步骤。
+
+我们这里先讨论一个常见的面试题，<u>判断一个数是质数</u>
+
+首先你需要了解质数的特点：
+
+- 质数也称为 **素数**
+- 质数表示大于1的自然数中，**<u>只能被1和自己整除的数</u>**
+
+OK，了解了这个特点，应该不难写出他的算法：
+
+```js
+/**
+ * 质数判断
+ * @param {*} key
+ * @param {*} value
+ */
+isPrime(n) {
+  if (n <= 3) {
+    return n > 1;
+  }
+  const t = Math.ceil(Math.sqrt(n));
+  for (let i = 2; i <= t; i++) {
+    if (n % i === 0) {
+      return false;
+    }
+  }
+  return true;
+}
+```
+
+#### 6.8.8. 完整代码
+
+```js
+const MAX_LOAD_FACTOR = 0.75;
+const MIN_LOAD_FACTOR = 0.25;
+
+export class HashTable {
+  constructor() {
+    this.storage = []; // 作为数组，存放元素
+    this.count = 0; // 用于记录HashTable存放的数量
+    this.limit = 7; // 表示数组当前的常数
+  }
+  /**
+   * 哈希函数
+   * 1. 将字符串转换成比较大的数字:hashCod
+   * 2. 将数字大的hashCode压缩到数组的（大小）范围内
+   * @param {*} str
+   * @param {*} size
+   * @returns 下标
+   */
+  hashFunc(str, size) {
+    // 1. 定义hashCode
+    let hashCode = 0;
+    // 2. 霍纳算法来计算hashCode的值
+    for (let i = 0; i < str.length; i++) {
+      hashCode = 31 * hashCode + str.charCodeAt(i);
+    }
+    // 3. 取余操作压缩到数组的（大小）范围内
+    const index = hashCode % size;
+    return index;
+  }
+  /**
+   * 质数判断
+   * @param {*} n
+   * @returns
+   */
+  isPrime(n) {
+    if (n <= 3) {
+      return n > 1;
+    }
+    const t = Math.ceil(Math.sqrt(n));
+    for (let i = 2; i <= t; i++) {
+      if (n % i === 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+  /**
+   * 获取质数
+   * @param {*} n
+   */
+  getPrime(n) {
+    while (!this.isPrime(n)) {
+      n++;
+    }
+    return n;
+  }
+  /**
+   * 放入/修改元素：HashMap -> { key, value }
+   * @param {*} key
+   * @param {*} value
+   */
+  put(key, value) {
+    // 1. 根据key获取对应的index
+    const index = this.hashFunc(key, this.limit);
+    // 2. 根据index获取对应的bucket
+    let bucket = this.storage[index];
+    // 3. 判断bucket是否存在，如果不存在则创建bucket（为了低耦合，这里直接用数组）
+    if (!bucket) {
+      bucket = [];
+      this.storage[index] = bucket;
+    }
+    // 4.线性查找bucket中每一个key是否等于传入的key（判断是插入还是修改）
+    let override = false;
+    for (let i = 0; i < bucket.length; i++) {
+      const [k] = bucket[i];
+      // 修改
+      if (k === key) {
+        bucket[i][1] = value;
+        override = true;
+        break;
+      }
+    }
+    // 5. 如果没有覆盖，那么就是新增
+    if (!override) {
+      bucket.push([key, value]);
+      this.count++;
+      if (this.count > this.limit * MAX_LOAD_FACTOR) {
+        let newLimit = this.limit * 2;
+        newLimit = this.getPrime(newLimit);
+        this.resize(newLimit);
+      }
+    }
+  }
+  /**
+   * 获取元素
+   * @param {*} key
+   */
+  get(key) {
+    // 1. 根据key获取index
+    const index = this.hashFunc(key, this.limit);
+    // 2. 根据下标值获取bucket
+    const bucket = this.storage[index];
+    if (!bucket) {
+      return null;
+    }
+    // 3. 线性查找
+    for (let i = 0; i < bucket.length; i++) {
+      const [k, v] = bucket[i];
+      if (k === key) {
+        return v;
+      }
+    }
+    return null;
+  }
+  /**
+   * 获取元素
+   * @param {*}} key
+   */
+  remove(key) {
+    // 1. 根据key获取index
+    const index = this.hashFunc(key, this.limit);
+    // 2. 根据下标值获取bucket
+    const bucket = this.storage[index];
+    if (!bucket) {
+      return null;
+    }
+    // 3. 线性查找，删除元素并将其返回
+    for (let i = 0; i < bucket.length; i++) {
+      const [k, v] = bucket[i];
+      if (k === key) {
+        bucket.splice(i, 1);
+        this.count--;
+        // 降容
+        if (this.limit > 8 && this.count < this.limit * MIN_LOAD_FACTOR) {
+          let newLimit = Math.floor(this.limit / 2);
+          newLimit = this.getPrime(newLimit);
+          this.resize(newLimit);
+        }
+        return v;
+      }
+    }
+    return null;
+  }
+  /**
+   * 是否为空
+   * @returns
+   */
+  isEmpty() {
+    return this, this.count === 0;
+  }
+  /**
+   * 长度
+   * @returns
+   */
+  size() {
+    return this.count;
+  }
+  /**
+   * 扩容/降容
+   * @param {*} newLimit
+   */
+  resize(newLimit) {
+    // 1. 保存旧的数组中的内容
+    let oldStorage = this.storage;
+    // 2. 重置属性
+    this.limit = newLimit;
+    this.storage = [];
+    this.count = 0;
+    // 3. 取出oldStorage所有的元素，重新放入到storage
+    oldStorage.forEach((bucket) => {
+      if (!bucket) {
+        return;
+      }
+      for (let i = 0; i < bucket.length; i++) {
+        const [k, v] = bucket[i];
+        this.put(k, v);
+      }
+    });
+  }
+}
+
+```
+
+## 7. 树结构
+
+![](./IMGS/tree_1.png)
+
+### 7.1. 术语
+
+在描述树的各个部分的时候有很多术语：
+
+### 7.2. 二叉树
+
+#### 7.2.1. 概念
+
+如果树中最多只能有两个子节点，这样的树就被称为 **<u>二叉树</u>**。几乎所有的树都可以表示成二叉树的形式。
+
+- 二叉树可以为空，也就是没有子节点。
+- 若不为空，则它是由根节点和称为其左子树（`TL`）和右子树（`TR`）的两个不相交的二叉树组成。
+
+二叉树的5中基本形态：
+
+![](./IMGS/tree_s.png)
+
+
+
+二叉树有几个比较重要的特性，在笔试题中比较常见：
+
+- 一个二叉树第 `i` 层的最大节点数为：$2^(i-1), i >= 1$
+- 深度为 `K` 的二叉树的最大节点总数为：$2^k - 1, k >= 1$
 
 # 四、排序算法
+
+
 

@@ -2,7 +2,7 @@
  * @Author: Lee
  * @Date: 2021-07-30 16:47:28
  * @LastEditors: Lee
- * @LastEditTime: 2021-10-26 18:09:27
+ * @LastEditTime: 2021-10-27 16:38:01
  */
 
 import { Stack } from './structure/stack/index.js';
@@ -163,6 +163,36 @@ console.log('------------ 06. 【哈希函数】');
 console.log('-----------------------------------------------');
 
 const hashTale = new HashTable();
-console.log(hashTale.hashFunc('lee', 11));
-console.log(hashTale.hashFunc('abc', 11));
-console.log(hashTale.hashFunc('cba', 11));
+
+// 存储
+/*
+hashTale.put('name', 'lee');
+hashTale.put('job', '前端工程师');
+hashTale.put('address', '成都市高新区');
+hashTale.put('job', '全栈工程师');
+console.log(hashTale.storage);
+
+// 获取
+console.log(hashTale.get('job'));
+console.log(hashTale.get('age'));
+
+// 删除
+console.log(hashTale.remove('job'));
+console.log(hashTale.storage);
+
+// 其他方法
+console.log(hashTale.isEmpty());
+console.log(hashTale.size());*/
+
+hashTale.put('aaa', 111);
+hashTale.put('bbb', 111);
+hashTale.put('ccc', 111);
+hashTale.put('ddd', 111);
+hashTale.put('eee', 111);
+hashTale.put('fff', 111);
+console.log(hashTale);
+
+hashTale.put('ggg', 222);
+console.log(hashTale);
+
+hashTale.isPrime(35)
