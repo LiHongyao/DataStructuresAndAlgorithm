@@ -2,13 +2,14 @@
  * @Author: Lee
  * @Date: 2021-07-30 16:47:28
  * @LastEditors: Lee
- * @LastEditTime: 2021-10-27 16:38:01
+ * @LastEditTime: 2021-11-08 15:01:49
  */
 
 import { Stack } from './structure/stack/index.js';
 import { Queue, PriorityQueue } from './structure/queue/index.js';
 import { LinkedList, DoubleLinkedList } from './structure/linked_list/index.js';
 import { HashTable } from './structure/hash_table/index.js';
+import { BinarySearchTree } from './structure/binary_search_tree/index.js';
 
 // 栈
 console.log('-----------------------------------------------');
@@ -196,3 +197,16 @@ hashTale.put('ggg', 222);
 console.log(hashTale);
 
 hashTale.isPrime(35)
+
+
+console.log('-----------------------------------------------');
+console.log('------------ 07. 二叉搜索树');
+console.log('-----------------------------------------------');
+
+
+const bst = new BinarySearchTree();
+bst.insert(9);
+bst.insert(2);
+bst.insert(7);
+bst.insert(12);
+console.log(bst);
