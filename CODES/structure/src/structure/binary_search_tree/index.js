@@ -2,7 +2,7 @@
  * @Author: Lee
  * @Date: 2021-11-08 13:48:53
  * @LastEditors: Lee
- * @LastEditTime: 2021-11-08 14:59:42
+ * @LastEditTime: 2021-11-15 16:24:46
  */
 
 /**
@@ -49,10 +49,10 @@ export class BinarySearchTree {
     // 1. 根据key创建对应的节点
     const newNode = new BinarySearchTreeNode(key);
     // 2. 判断根节点是否有值
-    if (!this.root) {
-      this.root = newNode;
-    } else {
+    if (this.root) {
       this._insertNode(this.root, newNode);
+    } else {
+      this.root = newNode;
     }
   }
 }
