@@ -2,7 +2,7 @@
  * @Author: Lee
  * @Date: 2021-07-30 16:47:28
  * @LastEditors: Lee
- * @LastEditTime: 2023-06-25 23:34:57
+ * @LastEditTime: 2023-07-01 22:22:56
  */
 
 import { Stack } from './libs/stack/index.js';
@@ -229,24 +229,49 @@ console.log(hashTale);
 hashTale.put('ggg', 222);
 console.log(hashTale);
 
-
 console.log(hashTale.isPrime(2));
 console.log(hashTale.isPrime(3));
 console.log(hashTale.isPrime(4));
 console.log(hashTale.isPrime(5));
 console.log(hashTale.isPrime(6));
 
-
-
-
-
 console.log('-----------------------------------------------');
 console.log('07. 二叉搜索树');
 console.log('-----------------------------------------------');
 
-// const bst = new BinarySearchTree();
-// bst.insert(9);
-// bst.insert(2);
-// bst.insert(7);
-// bst.insert(12);
-// console.log(bst);
+// 1. 创建二叉树
+const bst = new BinarySearchTree();
+
+// 2. 插入数据
+bst.insert(11);
+bst.insert(7);
+bst.insert(15);
+bst.insert(5);
+bst.insert(3);
+bst.insert(9);
+bst.insert(8);
+bst.insert(10);
+bst.insert(13);
+bst.insert(12);
+bst.insert(14);
+bst.insert(20);
+bst.insert(18);
+bst.insert(25);
+bst.insert(6);
+
+// 3. 测试遍历
+console.log('先序遍历：', bst.preOrderTraverse());
+console.log('中序遍历：', bst.inorderTraverse());
+console.log('后序遍历：', bst.postOrderTraverse());
+
+// 4. 最值
+console.log('最小值：', bst.min());
+console.log('最大值：', bst.max());
+
+// 5. 搜索特定的值
+console.log(bst.search(13));
+console.log(bst.remove(9));
+console.log(bst.remove(7));
+console.log(bst.remove(15));
+console.log('后序遍历：', bst.postOrderTraverse());
+console.log(bst.root);
