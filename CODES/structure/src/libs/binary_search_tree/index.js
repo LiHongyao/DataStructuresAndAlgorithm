@@ -2,7 +2,7 @@
  * @Author: Lee
  * @Date: 2021-11-08 13:48:53
  * @LastEditors: Lee
- * @LastEditTime: 2023-07-01 21:57:41
+ * @LastEditTime: 2023-07-05 11:12:15
  */
 
 // 二叉搜索树节点类
@@ -56,6 +56,7 @@ export class BinarySearchTree {
       }
     }
   }
+  
 
   /**
    * 先序遍历

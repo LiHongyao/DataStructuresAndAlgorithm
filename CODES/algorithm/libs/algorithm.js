@@ -2,20 +2,20 @@
  * @Author: Lee
  * @Date: 2023-07-03 11:14:48
  * @LastEditors: Lee
- * @LastEditTime: 2023-07-04 19:24:29
+ * @LastEditTime: 2023-07-05 21:13:31
  * @Description:
  */
 class Algorithm {
   /**
    * 冒泡排序
    * @param {*} arr 待排序数组
-   * @returns 已排序数组
    */
   static bubbleSort(arr) {
+    // 获取数组长度
     const length = arr.length;
-    // 外层循环控制遍历次数
+    // 外层循环控制遍历次数（趟数）
     for (let i = 0; i < length - 1; i++) {
-      // 内层循环进行比较和交换
+      // 内层循环进行比较和交换（次数）
       for (let j = 0; j < length - i - 1; j++) {
         // 如果当前元素比下一个元素大，则交换它们的位置
         if (arr[j] > arr[j + 1]) {
@@ -24,20 +24,18 @@ class Algorithm {
         }
       }
     }
-    return arr;
   }
 
   /**
    * 选择排序
    * @param {*} arr 待排序数组
-   * @returns 已排序数组
    */
   static selectionSort(arr) {
+    // 获取数组长度
     const length = arr.length;
     // 遍历未排序部分
     for (let i = 0; i < length - 1; i++) {
       let minIndex = i; // 假设当前元素是最小的
-
       // 在未排序部分中寻找最小元素的索引
       for (let j = i + 1; j < length; j++) {
         if (arr[j] < arr[minIndex]) {
@@ -47,13 +45,11 @@ class Algorithm {
       // 将最小元素与未排序部分的第一个元素进行交换
       [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
     }
-    return arr;
   }
 
   /**
    * 插入排序
    * @param {*} arr 待排序数组
-   * @returns 已排序数组
    */
   static insertionSort(arr) {
     // 1. 获取数组的长度
@@ -63,7 +59,7 @@ class Algorithm {
       // 3. 内层循环：获取i位置的元素，和前面的数据依次进行比较
       let current = arr[i]; // 当前待插入元素
       let j = i; // 记录当前位置下标
-      while (j > 0 && arr[j - 1] > current) {
+      while (arr[j - 1] > current && j > 0) {
         arr[j] = arr[j - 1];
         j--;
       }
@@ -71,13 +67,11 @@ class Algorithm {
       // 4. 在j位置，放置current即可。
       arr[j] = current;
     }
-    return arr;
   }
 
   /**
    * 希尔排序
    * @param {*} arr 待排序数组
-   * @returns 已排序数组
    */
   static shellSort(arr) {
     // 1. 获取数组长度
@@ -102,7 +96,6 @@ class Algorithm {
       // 5. 缩小gap
       gap = Math.floor(gap / 2);
     }
-    return arr;
   }
 
   /**
@@ -110,7 +103,6 @@ class Algorithm {
    * @param {*} arr
    * @param {*} left
    * @param {*} right
-   * @returns
    */
   static quickSort(arr, left = 0, right = arr.length - 1) {
     // 当左指针大于等于右指针时，数组已经有序，无需继续排序
