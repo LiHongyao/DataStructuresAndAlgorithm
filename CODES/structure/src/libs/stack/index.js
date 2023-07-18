@@ -2,35 +2,57 @@
  * @Author: Lee
  * @Date: 2021-07-30 16:45:30
  * @LastEditors: Lee
- * @LastEditTime: 2023-06-21 14:00:22
+ * @LastEditTime: 2023-07-06 11:31:46
  */
 
 export class Stack {
   constructor() {
     this.items = [];
   }
-  // 将元素压入栈顶
-  push(element) {
-    this.items.push(element);
+  /**
+   * 入栈
+   * @param {*} value
+   */
+  push(value) {
+    this.items.push(value);
   }
-  // 弹出栈顶元素并返回
+
+  /**
+   * 出栈
+   * @returns 返回出栈元素
+   */
   pop() {
     return this.items.pop();
   }
-  // 返回栈顶元素但不弹出
+
+  /**
+   * 返回栈顶元素
+   * @returns
+   */
   peek() {
-    if (this.items.isEmpty) return null;
+    if (this.isEmpty()) return null;
     return this.items[this.items.length - 1];
   }
-  // 判断栈是否为空
-  isEmpty() {
-    return this.items.length === 0;
-  }
-  // 返回栈的大小
+
+  /**
+   * 返回栈的大小
+   * @returns
+   */
   size() {
     return this.items.length;
   }
-  // 清空栈
+
+  /**
+   * 判断栈行结构是否为空
+   * @returns
+   */
+  isEmpty() {
+    return this.items.length === 0;
+  }
+
+  /**
+   * 清空栈
+   */
   clear() {
     this.items = [];
   }

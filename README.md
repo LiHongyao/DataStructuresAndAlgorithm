@@ -66,7 +66,7 @@
 
 # 二、什么是算法？
 
-- [图解排序算法 >>](http://www.guqiankun.com/sortalgorithm/)
+[图解排序算法 >>](http://www.guqiankun.com/sortalgorithm/)
 
 ## 1. 算法的定义
 
